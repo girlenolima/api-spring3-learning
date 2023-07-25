@@ -1,10 +1,40 @@
-## Guia para Desenvolvimento de uma API REST com Spring Boot 3 para Iniciantes.
+## Desenvolvimento de uma API REST com Spring Boot 3 para Iniciantes.
 
 <div align="justify"> 
-
 Seja bem-vindo(a)! Este repositório é dedicado ao desenvolvimento de uma API REST utilizando o Spring Boot 3, especialmente voltado para iniciantes que estão buscando adquirir conhecimentos sólidos em Java e Spring Boot por meio dos cursos oferecidos pela Alura. Neste guia, abordaremos as melhores práticas e técnicas para a criação de uma API REST moderna e eficiente.</div>
 
-### Technologies.
----
-JAVA
-> <div align="justify">Java is a high-level, object-oriented programming language developed by Sun Microsystems (now owned by Oracle) in the early 1990s. It is a platform-independent language that allows the creation of cross-platform applications that can run on various operating systems, including Windows, MacOS, and Linux. </div>
+#### API REST.
+> <div align="justify">Uma API REST (Application Programming Interface - Representational State Transfer) é um conjunto de regras e padrões que possibilita a comunicação e interação entre sistemas de forma padronizada, seguindo os princípios do estilo arquitetural REST. Essa arquitetura é amplamente utilizada na construção de serviços web, permitindo a troca de dados entre aplicações de maneira eficiente e confiável. REST baseia-se no conceito de recursos, que são identificados por URIs (Uniform Resource Identifiers), e cada recurso pode ser acessado e manipulado por meio dos métodos HTTP adequados, como GET para leitura, POST para criação, PUT para atualização e DELETE para exclusão. A comunicação ocorre por meio de representações de recursos, normalmente formatadas em JSON (JavaScript Object Notation) ou XML (Extensible Markup Language), tornando a troca de informações entre cliente e servidor leve e fácil de entender. Além disso, a API é "sem estado" (stateless), o que significa que cada requisição para o servidor contém todas as informações necessárias para processar a solicitação, não sendo mantido nenhum estado de sessão entre as requisições. Isso torna mais escalável e independente, facilitando o desenvolvimento, teste e manutenção. Com sua facilidade de integração, independência de plataforma e escalabilidade </div>
+
+#### Padrao DTO.
+> <div align="justify">DTO (Data Transfer Object) é um padrão de projeto utilizado em aplicações para transferir dados entre diferentes camadas do sistema ou entre a aplicação e serviços externos. O objetivo principal do DTO é encapsular os dados em uma estrutura simples e específica, evitando a exposição direta das entidades de domínio e garantindo uma comunicação mais eficiente e segura. </div>
+
+> <div align="justify">DTOs ajuda a evitar problemas de acoplamento excessivo entre as camadas do sistema. Ele permite que as entidades de domínio permaneçam focadas em suas regras de negócio, enquanto os DTOs cuidam exclusivamente do transporte de dados. Essa separação torna o código mais coeso e facilita a manutenção e evolução da aplicação. </div>
+
+> <div align="justify">O padrão DTO pode (e deve) ser utilizado quando não queremos expor todos os atributos de alguma entidade do nosso projeto, situação igual a dos salários dos funcionários mostrado no exemplo de código anterior. Além disso, com a flexibilidade e a opção de filtrar quais dados serão transmitidos, podemos poupar tempo de processamento. (Alura) </div>
+
+> <div align="justify">DTO evita ataques do tipo Mass Assignment. Ataque que ocorre quando dados indesejados ou não autorizados são atribuídos a campos ou propriedades de um objeto. Por exemplo : uma requisição externa, como uma requisição HTTP em uma API, contém mais informações do que o necessário para a operação em questão, imagine que um usuário deseja atualizar seu perfil em um sistema e envia uma requisição com os campos "nome", "email" e "isAdmin". Se essa requisição for diretamente associada à entidade de domínio que representa o usuário, sem filtragem, o campo "isAdmin" também será atualizado, mesmo que o usuário não tenha permissão para isso.</div>
+
+> <div align="justify">O padrao atua como uma camada intermediária entre as requisições externas e as entidades de domínio. Ele define uma estrutura específica para a transferência de dados, contendo apenas os campos que são permitidos ou relevantes para uma determinada operação. Na hora de atualizar o perfil do usuário, por exemplo, o DTO pode conter apenas os campos "nome" e "email". Dessa forma, o campo "isAdmin" não estará presente no DTO e, consequentemente, não será atualizado na entidade de domínio.</div>
+
+> <div align="justify">Como bonus ainda evita problemas do tipo Loop infinito causando StackOverflowError; Esse problema acontece quando você tenta serializar um objeto que contém referências a outros objetos, e esses objetos, por sua vez, também fazem referência de volta ao objeto original. Isso cria um ciclo infinito durante o processo de serialização, levando a uma recursão contínua e, eventualmente, resultando no estouro de pilha. Para evitar o problema, você deve mapear adequadamente o conteúdo das entidades de domínio para os DTOs, garantindo que as referências circulares sejam ignoradas durante a serialização. Dessa forma, você terá mais controle sobre o processo de transferência de dados e evitará o estouro de pilha.</div>
+
+
+## Primeira fase
+<div align="justify">A fase inicial do projeto  dividida em três etapas fundamentais: CRUD (Create, Read, Update e Delete), validações, e paginação e ordenação. No primeiro estágio, focamos na implementação das operações básicas de CRUD, que são essenciais para o funcionamento da API. Em seguida veio às validações dos dados recebidos pela API, garantindo a integridade e consistência das informações. Esse passo foi crucial para assegurar que os dados processados estivessem corretos e aderentes aos requisitos definidos. Finalmente, na terceira parte da fase inicial, abordamos a paginação e ordenação dos resultados. Com o crescimento da quantidade de dados, torna-se imprescindível implementar a paginação para evitar sobrecargas e otimizar o desempenho da API. Além disso, proporcionamos a possibilidade de ordenar os resultados de acordo com critérios específicos, oferecendo uma experiência mais personalizada para os usuários.</div>
+
+#### CRUD.
+> <div align="justify">O CRUD, abreviação para Create, Read, Update e Delete, representa um conjunto essencial de operações para o gerenciamento de dados em sistemas e aplicações. Cada uma dessas operações desempenha um papel específico na manipulação de informações. A operação de criação permite adicionar novos registros, enquanto a leitura recupera dados existentes, permitindo consultas e visualizações. Por sua vez, a atualização possibilita modificar registros já existentes, enquanto a exclusão remove informações que não são mais necessárias. Essas operações são fundamentais para o desenvolvimento de sistemas eficientes e completos, permitindo que dados sejam organizados e manipulados de maneira estruturada. O CRUD é amplamente utilizado em diferentes contextos, contribuindo para a construção de aplicações interativas e confiáveis capazes de interagir com usuários e outros sistemas de forma eficaz. </div>
+
+##  Tecnologias utilizadas na primeira fase.
+| Tecnologia                   | Descrição                                                                       |
+|------------------------------|---------------------------------------------------------------------------------|
+| Spring Boot 3                |O Spring Boot 3 é um poderoso framework de desenvolvimento para Java, que facilita a criação de aplicações web robustas e escaláveis.|
+| Java 17                      |O Java 17 é a versão mais recente da linguagem de programação Java, oferecendo melhorias de desempenho, novos recursos e correções de bugs.|
+| Lombok                       |Lombok é uma biblioteca do Java que simplifica a criação de classes, reduzindo a necessidade de escrever códigos repetitivos, como getters, setters e construtores.|
+| MySQL                        |MySQL é um sistema de gerenciamento de banco de dados relacional amplamente utilizado|
+| Flyway                       |Flyway é uma ferramenta de controle de versão para bancos de dados que permite gerenciar e aplicar migrações com facilidade|
+| JPA                          |JPA (Java Persistence API) é uma especificação que define uma interface comum para mapear objetos Java para entidades de um banco de dados relacional.|
+| Hibernate                    |Hibernate é uma das implementações mais populares dessa especificação, oferecendo recursos poderosos para a persistência de dados|
+| Maven                        |Maven é uma ferramenta de automação de compilação e gerenciamento de dependências, amplamente usada em projetos Java|
+| Insomnia                     |Insomnia é uma plataforma para testar e desenvolver APIs. É uma ferramenta útil para enviar requisições HTTP, visualizar as respostas, testar diferentes cenários e depurar APIs de forma eficiente.|

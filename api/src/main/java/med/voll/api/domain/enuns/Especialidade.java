@@ -1,4 +1,4 @@
-package med.voll.api.enuns;
+package med.voll.api.domain.enuns;
 
 public enum Especialidade {
 

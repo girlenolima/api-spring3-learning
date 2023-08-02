@@ -15,14 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import jakarta.validation.Valid;
-import med.voll.api.medico.DadosAtualizarMedicos;
-import med.voll.api.medico.DadosCadastroMedicos;
-import med.voll.api.medico.DadosDetalhamentoMedico;
-import med.voll.api.medico.DadosListagemMedicos;
-import med.voll.api.medico.Medico;
-import med.voll.api.medico.MedicoRepository;
+
+import med.voll.api.domain.medico.MedicoRepository;
+import med.voll.api.domain.medico.DadosAtualizarMedicos;
+import med.voll.api.domain.medico.DadosCadastroMedicos;
+import med.voll.api.domain.medico.DadosDetalhamentoMedico;
+import med.voll.api.domain.medico.DadosListagemMedicos;
+import med.voll.api.domain.medico.Medico;
+
+
 
 @RestController
 @RequestMapping("/medicos")
@@ -33,7 +35,7 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroMedicos dados,UriComponentsBuilder uriBuilder) {
+    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroMedicos dados, UriComponentsBuilder uriBuilder) {
 
         var medico = new Medico(dados);
         repository.save(medico);
@@ -43,21 +45,21 @@ public class MedicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosListagemMedicos>> listar(@PageableDefault(size = 10, sort = { "nome" }) Pageable paginacao) {
+    public ResponseEntity<Page<DadosListagemMedicos>> listar(
+            @PageableDefault(size = 10, sort = { "nome" }) Pageable paginacao) {
 
-        var page =  repository.findAllByAtivoTrue(paginacao)
+        var page = repository.findAllByAtivoTrue(paginacao)
                 .map(DadosListagemMedicos::new);
 
         return ResponseEntity.ok(page);
     }
 
-
     @DeleteMapping(path = "/{id}")
     @Transactional
-    public ResponseEntity deletar(@PathVariable  Long id) {
+    public ResponseEntity deletar(@PathVariable Long id) {
         var medico = repository.getReferenceById(id);
         medico.inabilitar();
-    
+
         return ResponseEntity.noContent().build();
     }
 
@@ -71,16 +73,10 @@ public class MedicoController {
         return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
     };
 
-
     @GetMapping(path = "/{id}")
-    public ResponseEntity detalhar(@PathVariable  Long id) {
+    public ResponseEntity detalhar(@PathVariable Long id) {
         var medico = repository.getReferenceById(id);
-       
         return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
     }
-    
-
-
-    
 
 }

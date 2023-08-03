@@ -11,15 +11,19 @@ import med.voll.api.domain.endereco.DadosEndereco;
 
 public record DadosCadastroPaciente(
        
-        @NotBlank
+        @NotBlank(message = "nome é obrigatório")
         String nome,
-        @NotBlank 
-        @Email
+
+        @NotBlank(message = "Email é obrigatório")
+        @Email(message = "Formato do e-mail é invalido")
         String email,
-        @NotBlank 
+
+        @NotBlank (message = "telefone é obrigatório")
         String telefone, 
-        @NotBlank
+
+        @NotBlank(message = "cpf é obrigatório")
         String cpf,
+
         @NotNull
         @Valid
         DadosEndereco endereco) {

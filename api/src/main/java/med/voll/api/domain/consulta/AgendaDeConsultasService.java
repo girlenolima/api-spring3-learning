@@ -1,15 +1,18 @@
 package med.voll.api.domain.consulta;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import med.voll.api.domain.ValidacaoException;
+import med.voll.api.domain.consulta.validacoes.ValidadorAgendamentoDeConsulta;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.PacienteRepository;
 
 @Service
-public class AgendaDeConsultas {
+public class AgendaDeConsultasService {
 
     @Autowired
     private ConsultaRepository consultaRepository;
@@ -20,7 +23,11 @@ public class AgendaDeConsultas {
     @Autowired
     private PacienteRepository pacienteRepository;
 
-    public void agendar(DadosAgendamentoConsulta dados) {
+    @Autowired // spring vai pegar todas as classes que implementam esse inteface e injetar uma
+               // por uma
+    private List<ValidadorAgendamentoDeConsulta> validadores;
+
+    public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados) {
 
         if (!pacienteRepository.existsById(dados.idPaciente())) {
             throw new ValidacaoException("Id do paciente nao existe");
@@ -36,11 +43,17 @@ public class AgendaDeConsultas {
         // getReferenceById -> apenas pega para fazer o relacionamento.
         // findById -> carrega a entidade para ser manipulada
 
+        validadores.forEach(v -> v.validar(dados));
+
         var paciente = pacienteRepository.getReferenceById(dados.idPaciente());
         var medico = escolherMedico(dados);
-        var consulta = new Consulta(null, medico, paciente, dados.data());
+        if (medico == null) {
+            throw new ValidacaoException("Nao existe medico disponivel nessa data para especialidade indicada");
+        }
 
+        var consulta = new Consulta(null, medico, paciente, dados.data());
         consultaRepository.save(consulta);
+        return new DadosDetalhamentoConsulta(consulta);
     }
 
     public Medico escolherMedico(DadosAgendamentoConsulta dados) {
@@ -54,7 +67,7 @@ public class AgendaDeConsultas {
 
         }
 
-        return medicoRepository.escolherMedicoAleatorioLivreNaData(dados.especialidade(),dados.data());
+        return medicoRepository.escolherMedicoAleatorioLivreNaData(dados.especialidade(), dados.data());
 
     }
 
